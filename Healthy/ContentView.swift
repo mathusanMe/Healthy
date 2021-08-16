@@ -21,6 +21,7 @@ struct ContentView: View {
             ForEach(items) { item in
                 Text("Item at \(item.timestamp!, formatter: itemFormatter)")
             }
+            .onDelete(perform: deleteItems)
         }
         .toolbar {
             #if os(iOS)
