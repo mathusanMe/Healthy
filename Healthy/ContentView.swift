@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) var colorScheme
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
@@ -18,21 +19,32 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+            GeometryReader { geometry in
+                ScrollView {
+                    ForEach(items) { item in
+                        HStack {
+                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                        }
+                        .frame(width: geometry.size.width, height: 50)
+                    }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                #if os(iOS)
-                ToolbarItem(placement: .navigationBarLeading){
-                    EditButton()
-                }
-                #endif
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                .background(
+                    Color.white
+                )
+                .navigationBarTitle(Text("Journal"), displayMode: .automatic)
+                .toolbar {
+                    #if os(iOS)
+                    ToolbarItem(placement: .navigationBarLeading){
+                        EditButton()
+                    }
+                    #endif
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        HStack {
+                            Button(action: addItem) {
+                                Image(systemName: "plus")
+                            }
+                        }
                     }
                 }
             }
