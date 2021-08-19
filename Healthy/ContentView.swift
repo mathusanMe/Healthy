@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) var colorScheme
-
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
@@ -19,19 +19,12 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                ScrollView {
+                List {
                     ForEach(items) { item in
-                        HStack {
-                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                        }
-                        .frame(width: geometry.size.width, height: 50)
+                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
                     }
                     .onDelete(perform: deleteItems)
                 }
-                .background(
-                    Color.white
-                )
                 .navigationBarTitle(Text("Journal"), displayMode: .automatic)
                 .toolbar {
                     #if os(iOS)
@@ -49,7 +42,6 @@ struct ContentView: View {
                 }
             }
         }
-    }
 
     private func addItem() {
         withAnimation {
